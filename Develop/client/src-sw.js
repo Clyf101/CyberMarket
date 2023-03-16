@@ -25,6 +25,22 @@ warmStrategyCache({
 });
 
 registerRoute(({ request }) => request.mode === 'navigate', pageCache);
+ request.destination === 'script' ||
+  request.destination === 'style' ||
+  request.destination === 'image' ||
+  request.destination === 'font',
+  new StaleWhileRevalidate({
+    cacheName: 'asset-cache',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxAgeSeconds: 60 * 60 * 24 * 7,
+      }),
+    ],
+  })
+;
 
-// TODO: Implement asset caching
+
 registerRoute();
